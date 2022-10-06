@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import fastify from "fastify";
 import { Application } from "./application";
 import { createServer } from "./server";
