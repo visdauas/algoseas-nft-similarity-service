@@ -5,6 +5,10 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
+import { initDatabase } from './databaseTest.js';
+
 export const sum = (a: number, b: number): number => {
   return a + b;
 };
+
+await initDatabase();
