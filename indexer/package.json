@@ -1,15 +1,14 @@
 {
-  "name": "nodejs-typescript-template",
-  "version": "1.15.0",
+  "name": "algoseas-indexer",
+  "version": "1.0.0",
   "description": "A template for a nodejs application, using typescript",
   "main": "dist/src/app.js",
   "author": "",
   "license": "MIT",
-  "type": "module",
   "scripts": {
     "dev": "nodemon --watch src/**/*.ts --exec ts-node ./src/app.ts",
     "build": "tsc",
-    "start": "yarn build && node ./dist/src/app.js",
+    "start": "node ./dist/src/app.js",
     "lint": "eslint --fix --quiet src/**/*.ts",
     "format": "prettier --loglevel silent --write src/**/*.ts",
     "test": "jest",

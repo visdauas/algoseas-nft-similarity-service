@@ -1,6 +1,6 @@
 {
-  "name": "fastify-template",
-  "version": "2.1.1",
+  "name": "algoseas-service",
+  "version": "1.0.0",
   "description": "minimal fastify template",
   "author": "",
   "repository": "https://github.com/mehmetsefabalik/fastify-template",
