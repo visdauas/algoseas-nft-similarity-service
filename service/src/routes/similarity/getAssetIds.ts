@@ -30,8 +30,16 @@ export default async function routes(fastify: FastifyInstance) {
     },
     async (request, response) => {
       const { assetId } = request.params;
+
+      const results = await fastify.milvus.client.dataManager.query({
+        collection_name: fastify.milvus.collectionName,
+        expr: "assetId == " + assetId,
+        output_fields: ["statVector"],
+      });
+      console.log(results)
+      
       const assetIdsResponse: AssetIds = {
-        assetIds: assetId
+        assetIds: "",
       };
 
       response.status(200).send(assetIdsResponse);
