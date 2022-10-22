@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 
 async function assetIdsFromIndex(next: number) : Promise<number[]> {
   const ids: number[] = [];
-  const URL = `https://algoindexer.algoexplorerapi.io/v2/assets?unit=PIRATE&next=${next}`;
+  const URL = `${process.env.ALGOINDEXER_URL}/assets?unit=PIRATE&next=${next}`;
   const response = await fetch(URL);
   const assets: any = await response.json();
   await Promise.all((assets.assets).map(async (asset: any)  => {

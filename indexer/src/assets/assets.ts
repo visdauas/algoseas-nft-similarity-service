@@ -27,13 +27,13 @@ function assetFromJSON(assetId: number, assetInformation: any, marketActivity: a
 }
 
 export async function getAsset(assetId: number) : Promise<Asset> {
-  const URL = `https://d3ohz23ah7.execute-api.us-west-2.amazonaws.com/prod/marketplace/asset/${assetId}`;
+  const URL = `${process.env.PIRATE_API_URL}/prod/marketplace/asset/${assetId}`;
   const response = await fetch(URL);
   const assetInformation: any = await response.json();
   if(assetInformation.marketActivity == undefined) {
     return assetFromJSON(assetId, assetInformation.assetInformation, null, 0);
   }
-  const TRX_URL = `https://algoindexer.algoexplorerapi.io/v2/assets/${assetId}/transactions`;
+  const TRX_URL = `${process.env.ALGOINDEXER_URL}/assets/${assetId}/transactions`;
   const trxResponse = await fetch (TRX_URL);
   const trxInformation: any = await trxResponse.json();
   if(trxInformation.transactions == undefined) {
