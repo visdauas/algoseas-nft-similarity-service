@@ -9,10 +9,13 @@ import { testDatabase } from './databaseTest';
 import { getClient } from './database/client';
 import { getAssetIds } from './assets/assetId';
 import { Asset, getAsset } from './assets/assets';
+import { getLastUpdates } from './assets/assetUpdate';
 
 export const sum = (a: number, b: number): number => {
   return a + b;
 };
+
+//getLastUpdates(5);
 
 /*
 getAssetIds().then(ids => {
