@@ -28,4 +28,4 @@ getAssetIds().then(ids => {
 */
 
 //getClient();
-//testDatabase();
+testDatabase();

@@ -11,6 +11,9 @@ export function getClient() {
 
 function createClient() {
   const address = process.env.MILVUS_URL!;
-  milvusClient = new MilvusClient(address);
-  console.log('created');
+  const user = process.env.MILVUS_USER!;
+  const password = process.env.MILVUS_PASSWORD!;
+
+  milvusClient = new MilvusClient(address, false, user, password);
+  console.log('connected');
 }

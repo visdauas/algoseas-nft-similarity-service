@@ -4,6 +4,8 @@ import { MilvusClient } from "@zilliz/milvus2-sdk-node";
 export interface MilvusDBOptions {
   url: string;
   collectionName: string;
+  user: string;
+  password: string;
 }
 
 interface MilvusDBInstance {
@@ -27,7 +29,7 @@ const milvusPlugin = async (
   options: MilvusDBOptions
 ): Promise<void> => {
   // Create a client
-  const client = new MilvusClient(options.url);
+  const client = new MilvusClient(options.url, false, options.user, options.password);
 
   await client.collectionManager.loadCollection({
     collection_name: options.collectionName,

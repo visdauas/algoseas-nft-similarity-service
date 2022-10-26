@@ -8,22 +8,32 @@ import { assetIdsSchema } from "./schemas/assetIds";
 import milvusPlugin from "./database/milvus";
 import fp from "fastify-plugin";
 
+import * as dotenv from "dotenv";
+dotenv.config();
+
 interface buildOpts extends FastifyServerOptions {
   exposeDocs?: boolean;
 }
 
 const build = (opts: buildOpts = {}): FastifyInstance => {
   const app = fastify(opts);
-  
+
   // add in common schemas
-  app.addSchema(assetIdsSchema)
+  app.addSchema(assetIdsSchema);
   app.addSchema(userSchema);
   app.addSchema(errorSchema);
 
+  const url = process.env.MILVUS_URL!;
+  const collectionName = process.env.MILVUS_COLLECTION_NAME!;
+  const user = process.env.MILVUS_USER!;
+  const password = process.env.MILVUS_PASSWORD!;
+
   app.register(fp(milvusPlugin), {
-    url: "localhost:19530",
-    collectionName: "algoseas_pirates",
-    });
+    url: url,
+    collectionName: collectionName,
+    user: user,
+    password: password,
+  });
   app.register(fastifyNoIcon);
 
   app.register(autoload, {
