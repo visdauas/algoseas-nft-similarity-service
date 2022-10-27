@@ -1,22 +1,29 @@
 import fetch from 'node-fetch';
 
-async function assetIdsFromIndex(next: number) : Promise<number[]> {
+async function assetIdsFromIndex(next: number): Promise<number[]> {
   const ids: number[] = [];
   const URL = `${process.env.ALGOINDEXER_URL}/assets?unit=PIRATE&next=${next}`;
   const response = await fetch(URL);
   const assets: any = await response.json();
-  await Promise.all((assets.assets).map(async (asset: any)  => {
-    ids.push(asset.index);
-  }));
+  await Promise.all(
+    assets.assets.map(async (asset: any) => {
+      if (
+        asset.params.manager ==
+        'SEASZVO4B4DC3F2SQKQVTQ5WXNVQWMCIPFPWTNQT3KMUX2JEGJ5K76ZC4Q'
+      ) {
+        ids.push(asset.index);
+      }
+    }),
+  );
   return ids;
 }
 
-export async function getAssetIds() : Promise<number[]> {
+export async function getAssetIds(): Promise<number[]> {
   let ids: number[] = [];
   ids = ids.concat(await assetIdsFromIndex(0));
-  while(ids.at(-1) && ids.at(-1) !== 0) {
-    const idList = await assetIdsFromIndex(ids.at(-1)!)
-    if(idList.length === 0) break;
+  while (ids.at(-1) && ids.at(-1) !== 0) {
+    const idList = await assetIdsFromIndex(ids.at(-1)!);
+    if (idList.length === 0) break;
     ids = ids.concat(idList);
     console.log(ids.length);
   }
