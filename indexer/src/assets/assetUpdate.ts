@@ -16,8 +16,8 @@ async function configChange(trx: any) : Promise<Asset | undefined> {
 }
 
 //https://developer.algorand.org/docs/get-details/indexer/#transaction-type
-export async function getLastUpdates(limit = 10) {
-  const URL = `${process.env.ALGOINDEXER_URL}/accounts/SEASZVO4B4DC3F2SQKQVTQ5WXNVQWMCIPFPWTNQT3KMUX2JEGJ5K76ZC4Q/transactions?limit=${limit}`;
+export async function getLastUpdates(minRound: number) {
+  const URL = `${process.env.ALGOINDEXER_URL}/accounts/SEASZVO4B4DC3F2SQKQVTQ5WXNVQWMCIPFPWTNQT3KMUX2JEGJ5K76ZC4Q/transactions?min-round=${minRound}`;
   const response = await fetch(URL);
   const transactions: any = await response.json();
   await Promise.all((transactions.transactions).map(async (trx: any) => {
