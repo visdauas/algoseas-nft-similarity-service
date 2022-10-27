@@ -13,7 +13,7 @@ export async function waitForBlock() {
   while(true) {
     const URL = `${process.env.ALGOEXPLORER_URL}/status/wait-for-block-after/${lastRound}`;
     await fetch(URL);
-    lastRound++;
     await getLastUpdates(lastRound);
+    lastRound++;
   }
 }

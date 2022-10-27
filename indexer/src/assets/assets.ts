@@ -31,9 +31,12 @@ export async function getAsset(assetId: number) : Promise<Asset | undefined> {
   const response = await fetch(URL);
   const assetInformation: any = await response.json();
 
-  const properties = assetInformation.assetInformation.nProps.properties;
-  if(properties.luck == undefined || properties.constitution == undefined
-    || properties.luck == undefined || properties.plunder == undefined) return undefined;
+  if(
+      assetInformation.assetInformation.nProps.properties.luck == undefined ||
+      assetInformation.assetInformation.nProps.properties.constitution == undefined ||
+      assetInformation.assetInformation.nProps.properties.luck == undefined ||
+      assetInformation.assetInformation.nProps.properties.plunder == undefined
+  ) return undefined;
 
   if(assetInformation.marketActivity == undefined) {
     return assetFromJSON(assetId, assetInformation.assetInformation, null, 0);
