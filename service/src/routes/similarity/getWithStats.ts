@@ -40,6 +40,9 @@ export default async function routes(fastify: FastifyInstance) {
           topk: topk == "" ? "5" : topk!,    
           metric_type: "L2",
           params: JSON.stringify({ nprobe: 100 }),
+          //params: JSON.stringify({ search_k: -1 }),
+          //params: JSON.stringify({ ef: 500 }),
+
         },
         vector_type: 101,    // DataType.FloatVector,
       });
