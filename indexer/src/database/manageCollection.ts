@@ -19,13 +19,15 @@ export async function releaseCollection(collectionName: string) {
 }
 
 export async function checkCollectionExsists(collectionName: string) {
-  await getClient().collectionManager.hasCollection({
+  const response = await getClient().collectionManager.hasCollection({
     collection_name: collectionName,
   });
+  return response.value;
 }
 
 export async function getCollectionStatistics(collectionName: string) {
-  await getClient().collectionManager.getCollectionStatistics({
+  const response = await getClient().collectionManager.getCollectionStatistics({
     collection_name: collectionName,
   });
+  return response;
 }
