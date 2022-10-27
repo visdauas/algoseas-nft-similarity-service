@@ -20,25 +20,27 @@ export async function initialIndex() {
     expr: "assetId != -1",
     output_fields: ["assetId"],
   });
-  const indexedAssetIdsArray = indexedAssetIds.data.map((asset: any) => asset.assetId);
+
+  const indexedAssetIdsArray: number[] = indexedAssetIds.data.map((asset: any) => +asset.assetId);
   //await dropCollection('algoseas_pirates');
 
   const assetIds: number[] = await getAssetIds();
 
-  const filteredAssetIds = assetIds.filter((id) => {
-    if (indexedAssetIdsArray.includes(id)) {
-      return false;
-    }
-    return id
-  });
+  const newAssetIds: number[] = [];
 
+  for (const assetId of assetIds) {
+    if (!indexedAssetIdsArray.includes(assetId)) {
+      newAssetIds.push(assetId);
+    }
+  }
+  
   const errorIds: number[] = [];
 
-  for (let i = 0; i < filteredAssetIds.length; i++) {
+  for (let i = 0; i < newAssetIds.length; i++) {
     try {
-      const asset: Asset | undefined = (await getAsset(filteredAssetIds[i]));
+      const asset: Asset | undefined = (await getAsset(newAssetIds[i]));
       if (asset == undefined){
-        errorIds.push(filteredAssetIds[i]);
+        errorIds.push(newAssetIds[i]);
       }
       else{
         const assetEntry: AssetDBEntry = {
@@ -54,13 +56,15 @@ export async function initialIndex() {
         };
         console.log(assetEntry);
         insertData('algoseas_pirates', [assetEntry]);
-        console.log(`Loaded asset ${i} of ${filteredAssetIds.length}`);  
+        console.log(`Loaded asset ${i} of ${newAssetIds.length}`);  
       }
     } catch (error) {
-      console.error(`Error loading asset ${filteredAssetIds[i]} of ${filteredAssetIds.length}`);
-      errorIds.push(filteredAssetIds[i]);
+      console.error(`Error loading asset ${newAssetIds[i]} of ${newAssetIds.length}`);
+      errorIds.push(newAssetIds[i]);
     }
   }
+
+  console.log(`Error loading assets: ${errorIds}`);
 
   await indexData();
 
