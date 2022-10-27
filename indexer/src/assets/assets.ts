@@ -39,5 +39,6 @@ export async function getAsset(assetId: number) : Promise<Asset> {
   if(trxInformation.transactions == undefined) {
     return assetFromJSON(assetId, assetInformation.assetInformation, assetInformation.marketActivity[0], 0);
   }
-  return assetFromJSON(assetId, assetInformation.assetInformation, assetInformation.marketActivity[0], trxInformation.transactions[0].confirmedRound);
+  const lastSoldRound = trxInformation.transactions[0].confirmedRound == undefined ? 0 : trxInformation.transactions[0].confirmedRound;
+  return assetFromJSON(assetId, assetInformation.assetInformation, assetInformation.marketActivity[0], lastSoldRound);
 }
