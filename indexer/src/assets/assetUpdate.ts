@@ -2,9 +2,10 @@ import { config } from 'dotenv';
 import fetch from 'node-fetch';
 import { Asset, getAsset } from './assets'
 
-async function configChange(trx: any) : Promise<Asset> {
+async function configChange(trx: any) : Promise<Asset | undefined> {
   const assetId = trx['asset-config-transaction']['asset-id'];
   const asset = await getAsset(assetId);
+  if(asset == undefined) return undefined;
   const b64Buffer = Buffer.from(trx.note, 'base64');
   const trxNote = JSON.parse(b64Buffer.toString('utf-8'));
   asset.combat = trxNote.properties.combat;
