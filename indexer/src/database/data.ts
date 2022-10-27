@@ -1,4 +1,4 @@
-import { AssetDBEntry } from 'types';
+import { AssetDBEntry } from '../types';
 import { getClient } from './client';
 
 export async function insertData(collectionName: string, data: AssetDBEntry[]) {
