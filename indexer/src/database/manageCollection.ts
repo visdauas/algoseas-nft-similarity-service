@@ -14,6 +14,18 @@ export async function loadCollection(collectionName: string) {
 
 export async function releaseCollection(collectionName: string) {
   await getClient().collectionManager.releaseCollection({
-    collection_name: 'book',
+    collection_name: collectionName,
+  });
+}
+
+export async function checkCollectionExsists(collectionName: string) {
+  await getClient().collectionManager.hasCollection({
+    collection_name: collectionName,
+  });
+}
+
+export async function getCollectionStatistics(collectionName: string) {
+  await getClient().collectionManager.getCollectionStatistics({
+    collection_name: collectionName,
   });
 }

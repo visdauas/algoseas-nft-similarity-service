@@ -1,4 +1,4 @@
-import { dropCollection, loadCollection } from './database/manage';
+import { dropCollection, loadCollection } from './database/manageCollection';
 import { fillDummy } from './database/fillDummy';
 import { initalizeDatabase } from './database/initalize';
 import { indexData } from './database/indexData';
