@@ -26,10 +26,15 @@ function assetFromJSON(assetId: number, assetInformation: any, marketActivity: a
   return asset;
 }
 
-export async function getAsset(assetId: number) : Promise<Asset> {
+export async function getAsset(assetId: number) : Promise<Asset | undefined> {
   const URL = `${process.env.PIRATE_API_URL}/prod/marketplace/asset/${assetId}`;
   const response = await fetch(URL);
   const assetInformation: any = await response.json();
+
+  const properties = assetInformation.assetInformation.nProps.properties;
+  if(properties.luck == undefined || properties.constitution == undefined
+    || properties.luck == undefined || properties.plunder == undefined) return undefined;
+
   if(assetInformation.marketActivity == undefined) {
     return assetFromJSON(assetId, assetInformation.assetInformation, null, 0);
   }
