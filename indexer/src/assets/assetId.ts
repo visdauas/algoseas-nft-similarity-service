@@ -9,7 +9,7 @@ async function assetIdsFromIndex(next: number) : Promise<number[]> {
     ids.push(asset.index);
   }));
   return ids;
-};
+}
 
 export async function getAssetIds() : Promise<number[]> {
   let ids: number[] = [];
@@ -21,4 +21,4 @@ export async function getAssetIds() : Promise<number[]> {
     console.log(ids.length);
   }
   return ids;
-};
+}

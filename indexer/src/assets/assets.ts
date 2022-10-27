@@ -9,7 +9,7 @@ export interface Asset {
   forSale: boolean,
   lastPrice: number,
   lastSoldRound: number,
-};
+}
 
 function assetFromJSON(assetId: number, assetInformation: any, marketActivity: any = null, lastSoldRound: number): Asset {
   const hasMarketActivity = marketActivity != null
@@ -40,4 +40,4 @@ export async function getAsset(assetId: number) : Promise<Asset> {
     return assetFromJSON(assetId, assetInformation.assetInformation, assetInformation.marketActivity[0], 0);
   }
   return assetFromJSON(assetId, assetInformation.assetInformation, assetInformation.marketActivity[0], trxInformation.transactions[0].confirmedRound);
-};
+}
