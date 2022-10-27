@@ -10,6 +10,7 @@ import { getClient } from './database/client';
 import { getAssetIds } from './assets/assetId';
 import { Asset, getAsset } from './assets/assets';
 import { getLastUpdates } from './assets/assetUpdate';
+import { initialIndex } from './initialIndex';
 
 export const sum = (a: number, b: number): number => {
   return a + b;
@@ -28,4 +29,6 @@ getAssetIds().then(ids => {
 */
 
 //getClient();
-testDatabase();
+//testDatabase();
+//initialIndex();
+

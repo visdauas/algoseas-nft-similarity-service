@@ -18,6 +18,7 @@ export async function getAssetIds() : Promise<number[]> {
     const idList = await assetIdsFromIndex(ids.at(-1)!)
     if(idList.length === 0) break;
     ids = ids.concat(idList);
+    console.log(ids.length);
   }
   return ids;
 };

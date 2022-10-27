@@ -12,7 +12,7 @@ export async function indexData() {
   const index_params_IVF_FLAT = {
     metric_type: "L2",
     index_type: "IVF_FLAT",
-    params: JSON.stringify({ nlist: 128 }),
+    params: JSON.stringify({ nlist: 32 }),
   };
 
   const index_params_IVF_PQ = {
@@ -30,7 +30,7 @@ export async function indexData() {
   const index_params_ANNOY = {
     metric_type: "L2",
     index_type: "ANNOY",
-    params: JSON.stringify({ n_trees: 1024 }),
+    params: JSON.stringify({ n_trees: 20 }),
   };
 
 
@@ -38,6 +38,6 @@ export async function indexData() {
   await milvusClient.indexManager.createIndex({
     collection_name: "algoseas_pirates",
     field_name: "statVector",
-    extra_params: index_params_IVF_FLAT,
+    extra_params: index_params_ANNOY,
   });
 }
