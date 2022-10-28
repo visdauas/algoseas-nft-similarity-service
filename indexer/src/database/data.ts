@@ -8,9 +8,9 @@ export async function insertData(collectionName: string, data: AssetDBEntry[]) {
   });
 }
 
-export async function deleteData(collectionName: string, assetId: number) {
+export async function deleteData(collectionName: string, assetIds: number[]) {
   await getClient().dataManager.deleteEntities({
     collection_name: collectionName,
-    expr: 'assetId == ' + assetId,
+    expr: 'assetId in [' + assetIds + ']',
   });
 }
