@@ -32,6 +32,8 @@ export async function getAsset(assetId: number) : Promise<Asset | undefined> {
   const assetInformation: any = await response.json();
 
   if(
+      assetInformation.assetInformation.nProps == undefined ||
+      assetInformation.assetInformation.nProps.properties == undefined ||
       assetInformation.assetInformation.nProps.properties.luck == undefined ||
       assetInformation.assetInformation.nProps.properties.constitution == undefined ||
       assetInformation.assetInformation.nProps.properties.luck == undefined ||

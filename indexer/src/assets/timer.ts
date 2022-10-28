@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { getLastUpdates } from './assetUpdate';
+import { getLastUpdates, getLastSold, getListings } from './assetUpdate';
 
 async function getLastRound() : Promise<number> {
   const URL = `${process.env.ALGOEXPLORER_URL}/status`;
@@ -14,6 +14,8 @@ export async function waitForBlock() {
     const URL = `${process.env.ALGOEXPLORER_URL}/status/wait-for-block-after/${lastRound}`;
     await fetch(URL);
     await getLastUpdates(lastRound);
+    await getLastSold(10);
+    await getListings(10);
     lastRound++;
   }
 }
