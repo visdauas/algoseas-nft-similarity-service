@@ -31,3 +31,15 @@ export async function getCollectionStatistics(collectionName: string) {
   });
   return response;
 }
+export async function flushCollection(collectionName: string) {
+  await getClient().dataManager.flush({
+    collection_names: [collectionName],
+  });
+}
+
+export async function dropIndex(collectionName: string, fieldName: string) {
+  await getClient().indexManager.dropIndex({
+    collection_name: collectionName,
+    field_name: fieldName,
+  });
+}
