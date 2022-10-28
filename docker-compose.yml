@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  indexer:
+    build: ./indexer
+    env_file:
+      - ./indexer/.env
+  service:
+    build: ./service
+    ports:
+      - 8080:8080
+    env_file:
+      - ./service/.env
+    depends_on:
+      - indexer
