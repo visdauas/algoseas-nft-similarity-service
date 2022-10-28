@@ -1,11 +1,11 @@
 import { getAssetIds } from './assets/assetId';
-import { Asset, getAsset } from './assets/assets';
+import { getAsset } from './assets/assets';
 import { indexData } from './database/indexData';
 import { initalizeDatabase } from './database/initalize';
 import { dropCollection, loadCollection, checkCollectionExsists, getCollectionStatistics } from './database/manageCollection';
 import { getClient } from './database/client';
 import { insertData } from './database/data';
-import { AssetDBEntry } from './types';
+import { AssetDBEntry, Asset } from './types';
 
 export async function initialIndex() {
   const exsists = await checkCollectionExsists('algoseas_pirates');
@@ -15,6 +15,28 @@ export async function initialIndex() {
 
   await loadCollection('algoseas_pirates');
 
+  await getClient().dataManager.flush({
+    collection_names: ["algoseas_pirates"],
+  });
+
+  await getClient().indexManager.dropIndex({
+    collection_name: "algoseas_pirates",
+    field_name: 'statVector',
+  });
+
+  const resp = await getClient().indexManager.getIndexState({
+    collection_name: "algoseas_pirates",
+  });
+
+  console.log(resp);
+
+  await indexData();
+
+  const response = await getClient().indexManager.getIndexBuildProgress({
+    collection_name: "algoseas_pirates",
+  });
+
+  console.log(response);
   const indexedAssetIds = await getClient().dataManager.query({
     collection_name: 'algoseas_pirates',
     expr: "assetId != -1",
@@ -22,7 +44,6 @@ export async function initialIndex() {
   });
 
   const indexedAssetIdsArray: number[] = indexedAssetIds.data.map((asset: any) => +asset.assetId);
-  //await dropCollection('algoseas_pirates');
 
   const assetIds: number[] = await getAssetIds();
 
