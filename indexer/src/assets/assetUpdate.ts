@@ -1,6 +1,7 @@
 import { config } from 'dotenv';
 import fetch from 'node-fetch';
-import { Asset, getAsset } from './assets'
+import { Asset } from '../types';
+import { getAsset } from './assets';
 
 async function configChange(trx: any) : Promise<Asset | undefined> {
   const assetId = trx['asset-config-transaction']['asset-id'];
@@ -36,19 +37,6 @@ export async function getLastSold(limit: number) {
     if(asset == undefined) return;
     asset.lastPrice = soldData.marketActivity.algoAmount;
     asset.forSale = false;
-    console.log(asset);
-  }));
-}
-
-export async function getListings(limit: number) {
-  const URL = `${process.env.PIRATE_API_URL}/prod/marketplace/listings?type=listing&limit=${limit}`;
-  const response = await fetch(URL);
-  const listings: any = await response.json();
-  await Promise.all(listings.map(async (listing:any) => {
-    const asset = await getAsset(listing.assetInformation.SK);
-    if(asset == undefined) return;
-    asset.lastPrice = listing.marketActivity.algoAmount;
-    asset.forSale = true;
     console.log(asset);
   }));
 }

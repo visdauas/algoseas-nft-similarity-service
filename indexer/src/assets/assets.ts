@@ -1,17 +1,7 @@
 import fetch from 'node-fetch';
+import { Asset } from '../types';
 
-export interface Asset {
-  assetId: number,
-  combat: number,
-  constitution: number,
-  luck: number,
-  plunder: number,
-  forSale: boolean,
-  lastPrice: number,
-  lastSoldRound: number,
-}
-
-function assetFromJSON(assetId: number, assetInformation: any, marketActivity: any = null, lastSoldRound: number): Asset {
+export function assetFromJSON(assetId: number, assetInformation: any, marketActivity: any = null, lastSoldRound: number): Asset {
   const hasMarketActivity = marketActivity != null
   const asset: Asset = {
     assetId: assetId,
@@ -31,14 +21,7 @@ export async function getAsset(assetId: number) : Promise<Asset | undefined> {
   const response = await fetch(URL);
   const assetInformation: any = await response.json();
 
-  if(
-      assetInformation.assetInformation.nProps == undefined ||
-      assetInformation.assetInformation.nProps.properties == undefined ||
-      assetInformation.assetInformation.nProps.properties.luck == undefined ||
-      assetInformation.assetInformation.nProps.properties.constitution == undefined ||
-      assetInformation.assetInformation.nProps.properties.luck == undefined ||
-      assetInformation.assetInformation.nProps.properties.plunder == undefined
-  ) return undefined;
+  if(!isValidAssetData(assetInformation)) return undefined;
 
   if(assetInformation.marketActivity == undefined) {
     return assetFromJSON(assetId, assetInformation.assetInformation, null, 0);
@@ -51,4 +34,16 @@ export async function getAsset(assetId: number) : Promise<Asset | undefined> {
   }
   const lastSoldRound = trxInformation.transactions[0].confirmedRound == undefined ? 0 : trxInformation.transactions[0].confirmedRound;
   return assetFromJSON(assetId, assetInformation.assetInformation, assetInformation.marketActivity[0], lastSoldRound);
+}
+
+export function isValidAssetData(assetInformation: any) : boolean {
+ if(
+    assetInformation.assetInformation.nProps == undefined ||
+    assetInformation.assetInformation.nProps.properties == undefined ||
+    assetInformation.assetInformation.nProps.properties.luck == undefined ||
+    assetInformation.assetInformation.nProps.properties.constitution == undefined ||
+    assetInformation.assetInformation.nProps.properties.luck == undefined ||
+    assetInformation.assetInformation.nProps.properties.plunder == undefined
+  ) return false;
+  return true;
 }
