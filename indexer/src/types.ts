@@ -20,3 +20,10 @@ export type Asset = {
   lastPrice: number,
   lastSoldRound: number,
 }
+
+export type StatWeights = {
+  combat: number,
+  constitution: number,
+  luck: number,
+  plunder: number,
+}

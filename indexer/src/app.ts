@@ -15,11 +15,18 @@ import { initialIndex } from './initialIndex';
 import { waitForBlock } from './assets/timer';
 import { getNListings } from './assets/listings';
 import { convertAssetToDBEntry } from './utils';
+import { StatWeights } from './types';
 
 export const sum = (a: number, b: number): number => {
   return a + b;
 };
 
+const statWeights: StatWeights = {
+  combat: parseFloat(process.env.PIRATE_COMBAT_WEIGHT!),
+  constitution: parseFloat(process.env.PIRATE_CONSTITUTION_WEIGHT!),
+  luck: parseFloat(process.env.PIRATE_LUCK_WEIGHT!),
+  plunder: parseFloat(process.env.PIRATE_PLUNDER_WEIGHT!),
+};
 
 //waitForBlock();
 
@@ -37,5 +44,5 @@ getAssetIds().then(ids => {
 
 //getClient();
 //testDatabase(); // do not uncomment if you don't want to reindex 21k items. learnt it the hard way
-//initialIndex();
+initialIndex(statWeights);
 

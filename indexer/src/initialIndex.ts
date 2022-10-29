@@ -5,11 +5,11 @@ import { initalizeDatabase } from './database/initalize';
 import { dropCollection, loadCollection, checkCollectionExsists, getCollectionStatistics } from './database/manageCollection';
 import { getClient } from './database/client';
 import { insertData } from './database/data';
-import { AssetDBEntry, Asset } from './types';
+import { AssetDBEntry, Asset, StatWeights } from './types';
 import { getEveryAsset } from './assets/indexAssets';
-import { convertAssetToDBEntry } from './utils';
+import { applyWeightsToAssetDBEntry, convertAssetToDBEntry } from './utils';
 
-export async function initialIndex() {
+export async function initialIndex(statWeights: StatWeights) {
 
   await dropCollection('algoseas_pirates');
 
@@ -28,7 +28,11 @@ export async function initialIndex() {
     return convertAssetToDBEntry(asset);
   });
 
-  await insertData('algoseas_pirates', assetDBEntries);
+  const weightedAssetDBEntries: AssetDBEntry[] = assetDBEntries.map((assetDBEntry) => {
+    return applyWeightsToAssetDBEntry(assetDBEntry, statWeights);
+  });  
+
+  await insertData('algoseas_pirates', weightedAssetDBEntries);
 
   await loadCollection('algoseas_pirates');
 
