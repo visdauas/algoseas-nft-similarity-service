@@ -4,16 +4,16 @@ import { isValidAssetData } from './assets';
 
 async function createAssets(assetsInformation: any) : Promise<Asset[]> {
   const assets: Asset[] = [];
-  Promise.all(assetsInformation.map(async (assetInformation:any) => {
+  await Promise.all(assetsInformation.map(async (assetInformation:any) => {
     if(isValidAssetData(assetInformation)) {
       const marketActivity = assetInformation.marketActivity;
       assetInformation = assetInformation.assetInformation;
       const a: Asset = {
         assetId: assetInformation.SK,
-        combat: assetInformation.nProps.combat,
-        luck: assetInformation.nProps.luck,
-        constitution: assetInformation.nProps.constitution,
-        plunder: assetInformation.nProps.plunder,
+        combat: assetInformation.nProps.properties.combat,
+        luck: assetInformation.nProps.properties.luck,
+        constitution: assetInformation.nProps.properties.constitution,
+        plunder: assetInformation.nProps.properties.plunder,
         forSale: marketActivity ? true : false,
         lastPrice: marketActivity ? marketActivity.algoAmount : 0,
         lastSoldRound: 0
@@ -49,6 +49,7 @@ async function getAssets(limit = 100): Promise<Asset[]> {
     });
     data = await response.json();
     assets.push(...(await createAssets(data.assets)));
+    console.log(assets.length);
   }
   return assets;
 }
