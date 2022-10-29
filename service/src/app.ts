@@ -1,4 +1,4 @@
-import fastify, { FastifyInstance, FastifyServerOptions } from "fastify";
+import fastify, { FastifyBaseLogger, FastifyHttp2SecureOptions, FastifyInstance, FastifyServerOptions } from "fastify";
 import autoload from "@fastify/autoload";
 import fastifyNoIcon from "fastify-no-icon";
 import path from "path";
@@ -7,16 +7,16 @@ import { errorSchema } from "./schemas/error";
 import { assetIdsSchema } from "./schemas/assetIds";
 import milvusPlugin from "./database/milvus";
 import fp from "fastify-plugin";
+import http2 from "http2";
+import httpsRedirect from "fastify-https-redirect";
 
 import * as dotenv from "dotenv";
 dotenv.config();
 
-interface buildOpts extends FastifyServerOptions {
-  exposeDocs?: boolean;
-}
 
-const build = (opts: buildOpts = {}): FastifyInstance => {
+const build = (opts: FastifyHttp2SecureOptions<http2.Http2SecureServer, FastifyBaseLogger>) => {
   const app = fastify(opts);
+  //app.register(httpsRedirect, {httpPort:1080});
 
   // add in common schemas
   app.addSchema(assetIdsSchema);
@@ -34,7 +34,10 @@ const build = (opts: buildOpts = {}): FastifyInstance => {
     user: user,
     password: password,
   });
+
   app.register(fastifyNoIcon);
+
+  app.register(httpsRedirect,{httpPort:8080, httpsPort:8000});
 
   app.register(autoload, {
     dir: path.join(__dirname, "routes"),

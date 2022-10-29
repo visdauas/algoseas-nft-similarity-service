@@ -1848,6 +1848,13 @@ fast-uri@^2.0.0, fast-uri@^2.1.0:
   resolved "https://registry.yarnpkg.com/fast-uri/-/fast-uri-2.1.0.tgz#9279432d6b53675c90116b947ed2bbba582d6fb5"
   integrity sha512-qKRta6N7BWEFVlyonVY/V+BMLgFqktCUV0QjT259ekAIlbVrMaFnFLxJ4s/JPl4tou56S1BzPufI60bLe29fHA==
 
+fastify-https-redirect@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/fastify-https-redirect/-/fastify-https-redirect-1.0.4.tgz#34a3c00512964a7ce8f1b963d1423d1e93248604"
+  integrity sha512-tQLhY59lwnHN9YYidrcnQyJdNFb7ecG0co4jMqJAwDSQ/OpVLrR4gkBqutBQGid/8ra+obqRisrenhuWNqH1Dg==
+  dependencies:
+    fastify-plugin "^1.4.0"
+
 fastify-no-icon@6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/fastify-no-icon/-/fastify-no-icon-6.0.0.tgz#d0ee219352aca40deaa9c9d3fc60709724cec6c4"
@@ -1859,6 +1866,13 @@ fastify-plugin@4.3.0, fastify-plugin@^4.2.1:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-4.3.0.tgz#c6eaa87a7a0d6d1d16129e43e31d6bc1d8868e53"
   integrity sha512-M3+i368lV0OYTJ5TfClIoPKEKSOF7112iiPdwgfSR0gN98BjA1Nk+c6oBHtfcVt9KiMxl+EQKHC1QNWo3ZOpYQ==
+
+fastify-plugin@^1.4.0:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-1.6.1.tgz#122f5a5eeb630d55c301713145a9d188e6d5dd5b"
+  integrity sha512-APBcb27s+MjaBIerFirYmBLatoPCgmHZM6XP0K+nDL9k0yX8NJPWDY1RAC3bh6z+AB5ULS2j31BUfLMT3uaZ4A==
+  dependencies:
+    semver "^6.3.0"
 
 fastify@4.9.2:
   version "4.9.2"

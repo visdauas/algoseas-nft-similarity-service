@@ -1,6 +1,9 @@
-import { FastifyInstance, FastifyListenOptions } from "fastify";
+import { FastifyInstance, FastifyListenOptions, RawReplyDefaultExpression, RawRequestDefaultExpression } from "fastify";
 import { Server, IncomingMessage, ServerResponse } from "http";
 import build from "./app";
+import fs from "fs";
+import path from "path";
+import http2 from "http2";
 
 const loggerConfig = {
   prettyPrint: true,
@@ -12,14 +15,20 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const options: FastifyListenOptions = {
-  port: 8080,
+  port: 8000,
   host: "0.0.0.0",
 };
 
 async function main() {
-  const app: FastifyInstance<Server, IncomingMessage, ServerResponse> = build({
+  
+  const app: FastifyInstance<http2.Http2SecureServer, RawRequestDefaultExpression<http2.Http2SecureServer>, RawReplyDefaultExpression<http2.Http2SecureServer>> = build({
+    http2: true,
+    https: {
+      allowHTTP1: true,
+      key: fs.readFileSync(path.resolve('cert', './key.pem')),
+      cert: fs.readFileSync(path.resolve('cert', './cert.pem')),
+    },
     logger: {},
-    exposeDocs,
   });
 
   //await app.ready();
