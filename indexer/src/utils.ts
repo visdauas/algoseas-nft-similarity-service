@@ -1,4 +1,4 @@
-import { Asset, AssetDBEntry, StatWeights } from './types';
+import { Asset, AssetDBEntry, AssetSalesDBEntry, StatWeights } from './types';
 
 export function convertAssetToDBEntry(asset: Asset): AssetDBEntry {
   const dbEntry: AssetDBEntry = {
@@ -30,6 +30,23 @@ export function applyWeightsToAssetDBEntry(
   asset.constitution = weightedStatVector[1];
   asset.luck = weightedStatVector[2];
   asset.plunder = weightedStatVector[3];
+
+  return asset;
+}
+
+export function applyWeightsToAssetSalesDBEntry(
+  asset: AssetSalesDBEntry,
+  weights: StatWeights,
+): AssetSalesDBEntry {
+  const statVector = asset.statVector;
+
+  const weightedStatVector = [
+    statVector[0] * weights.combat,
+    statVector[1] * weights.constitution,
+    statVector[2] * weights.luck,
+    statVector[3] * weights.plunder,
+  ];
+  asset.statVector = weightedStatVector;
 
   return asset;
 }
