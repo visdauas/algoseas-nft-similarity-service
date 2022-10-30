@@ -1,12 +1,14 @@
 import { schemaToEmbeddings } from '../utils';
 import { AssetDBEntry } from '../types';
 import { getClient } from './client';
+import { flushCollection } from './collection';
 
 export async function insertData(collectionName: string, data: AssetDBEntry[]) {
   await getClient().dataManager.insert({
     collection_name: collectionName,
     fields_data: data,
   });
+  await flushCollection(collectionName);
 }
 
 export async function deleteData(collectionName: string, assetIds: number[]) {
