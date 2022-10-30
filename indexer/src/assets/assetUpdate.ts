@@ -35,7 +35,7 @@ export async function getLastSold(limit: number) {
   await Promise.all(sold.map(async (soldData:any) => {
     const asset = await getAsset(soldData.assetInformation.SK);
     if(asset == undefined) return;
-    asset.lastPrice = soldData.marketActivity.algoAmount;
+    asset.price = soldData.marketActivity.algoAmount;
     asset.forSale = false;
     console.log(asset);
   }));

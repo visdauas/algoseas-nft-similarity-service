@@ -6,8 +6,14 @@ export type AssetDBEntry = {
   luck: number;
   plunder: number;
   forSale: boolean;
-  lastPrice: number;
-  lastSoldRound: number;
+  price: number;
+};
+
+export type AssetSalesDBEntry = {
+  assetId: number;
+  statVector: number[];
+  price: number;
+  round: number;
 };
 
 export type Asset = {
@@ -17,8 +23,7 @@ export type Asset = {
   luck: number,
   plunder: number,
   forSale: boolean,
-  lastPrice: number,
-  lastSoldRound: number,
+  price: number,
 }
 
 export type StatWeights = {

@@ -1,5 +1,15 @@
 import { getClient } from './client';
 
+export async function createCollection(
+  collectionName: string,
+  collectionFields: any[],
+) {
+  await getClient().collectionManager.createCollection({
+    collection_name: collectionName,
+    fields: collectionFields,
+  });
+}
+
 export async function dropCollection(collectionName: string) {
   await getClient().collectionManager.dropCollection({
     collection_name: collectionName,

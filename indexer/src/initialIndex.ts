@@ -2,7 +2,7 @@ import { getAssetIds } from './assets/assetId';
 import { getAsset } from './assets/assets';
 import { indexData } from './database/indexData';
 import { initalizeDatabase } from './database/initalize';
-import { dropCollection, loadCollection, checkCollectionExsists, getCollectionStatistics } from './database/manageCollection';
+import { dropCollection, loadCollection, checkCollectionExsists, getCollectionStatistics } from './database/collection';
 import { getClient } from './database/client';
 import { insertData } from './database/data';
 import { AssetDBEntry, Asset, StatWeights } from './types';

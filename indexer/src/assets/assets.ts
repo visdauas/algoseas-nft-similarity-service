@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import { Asset } from '../types';
 
-export function assetFromJSON(assetId: number, assetInformation: any, marketActivity: any = null, lastSoldRound: number): Asset {
+export function assetFromJSON(assetId: number, assetInformation: any, marketActivity: any = null): Asset {
   const hasMarketActivity = marketActivity != null
   const asset: Asset = {
     assetId: assetId,
@@ -10,8 +10,7 @@ export function assetFromJSON(assetId: number, assetInformation: any, marketActi
     luck: assetInformation.nProps.properties.luck,
     plunder: assetInformation.nProps.properties.plunder,
     forSale: hasMarketActivity ? marketActivity.event.includes('ACTIVE_LISTING') : false,
-    lastPrice: hasMarketActivity ? marketActivity.algoAmount : 0,
-    lastSoldRound
+    price: hasMarketActivity ? marketActivity.algoAmount : 0,
   };
   return asset;
 }
@@ -24,16 +23,16 @@ export async function getAsset(assetId: number) : Promise<Asset | undefined> {
   if(!isValidAssetData(assetInformation)) return undefined;
 
   if(assetInformation.marketActivity == undefined) {
-    return assetFromJSON(assetId, assetInformation.assetInformation, null, 0);
+    return assetFromJSON(assetId, assetInformation.assetInformation, null);
   }
   const TRX_URL = `${process.env.ALGOINDEXER_URL}/assets/${assetId}/transactions`;
   const trxResponse = await fetch (TRX_URL);
   const trxInformation: any = await trxResponse.json();
   if(trxInformation.transactions == undefined) {
-    return assetFromJSON(assetId, assetInformation.assetInformation, assetInformation.marketActivity[0], 0);
+    return assetFromJSON(assetId, assetInformation.assetInformation, assetInformation.marketActivity[0]);
   }
   const lastSoldRound = trxInformation.transactions[0].confirmedRound == undefined ? 0 : trxInformation.transactions[0].confirmedRound;
-  return assetFromJSON(assetId, assetInformation.assetInformation, assetInformation.marketActivity[0], lastSoldRound);
+  return assetFromJSON(assetId, assetInformation.assetInformation, assetInformation.marketActivity[0]);
 }
 
 export function isValidAssetData(assetInformation: any) : boolean {

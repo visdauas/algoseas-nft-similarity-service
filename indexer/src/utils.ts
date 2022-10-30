@@ -9,8 +9,7 @@ export function convertAssetToDBEntry(asset: Asset): AssetDBEntry {
     luck: asset.luck,
     plunder: asset.plunder,
     forSale: asset.forSale,
-    lastPrice: asset.lastPrice,
-    lastSoldRound: asset.lastSoldRound,
+    price: asset.price,
   };
   return dbEntry;
 }
@@ -33,4 +32,11 @@ export function applyWeightsToAssetDBEntry(
   asset.plunder = weightedStatVector[3];
 
   return asset;
+}
+
+export function schemaToEmbeddings(schema: any): string[] {
+  const embeddings = schema.map((field: any) => {
+    return field.name;
+  });
+  return embeddings;
 }

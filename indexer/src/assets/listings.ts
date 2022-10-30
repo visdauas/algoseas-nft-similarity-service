@@ -28,7 +28,7 @@ export async function getNListings(limit = 0) : Promise<Asset[]> {
   await Promise.all(listings.map(async (listing:any) => {
     const asset = listingToAsset(listing); 
     if(asset == undefined) return;
-    asset.lastPrice = listing.marketActivity.algoAmount;
+    asset.price = listing.marketActivity.algoAmount;
     asset.forSale = true;
     assets.push(asset);
   }));
@@ -41,7 +41,7 @@ function listingToAsset(listing: any) : Asset | undefined {
 
   if(!isValidAssetData(listing)) return undefined;
 
-  const asset = assetFromJSON(assetInformation.SK, assetInformation, marketActivity, 0);
+  const asset = assetFromJSON(assetInformation.SK, assetInformation, marketActivity);
   if(asset.combat == undefined || asset.luck == undefined 
     || asset.plunder == undefined || asset.constitution == undefined)
     return undefined;

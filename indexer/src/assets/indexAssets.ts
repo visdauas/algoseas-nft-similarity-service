@@ -15,8 +15,7 @@ async function createAssets(assetsInformation: any) : Promise<Asset[]> {
         constitution: assetInformation.nProps.properties.constitution,
         plunder: assetInformation.nProps.properties.plunder,
         forSale: marketActivity ? true : false,
-        lastPrice: marketActivity ? marketActivity.algoAmount : 0,
-        lastSoldRound: 0
+        price: marketActivity ? marketActivity.algoAmount : 0,
       };
       assets.push(a);
     }
