@@ -1,3 +1,4 @@
+import { schemaToEmbeddings } from '../utils';
 import { AssetDBEntry } from '../types';
 import { getClient } from './client';
 
@@ -13,4 +14,13 @@ export async function deleteData(collectionName: string, assetIds: number[]) {
     collection_name: collectionName,
     expr: 'assetId in [' + assetIds + ']',
   });
+}
+
+export async function getAllData(collectionName: string, schema: any) {
+  const results = await getClient().dataManager.query({
+    collection_name: collectionName,
+    expr: 'assetId != -1',
+    output_fields: schemaToEmbeddings(schema),
+  });
+  return results;
 }
