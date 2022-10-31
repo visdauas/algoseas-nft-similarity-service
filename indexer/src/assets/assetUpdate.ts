@@ -1,6 +1,8 @@
+import { deleteData, insertData } from 'database/data';
 import { config } from 'dotenv';
 import fetch from 'node-fetch';
 import { Asset } from '../types';
+import { convertAssetToDBEntry } from '../utils';
 import { getAsset } from './assets';
 
 async function configChange(trx: any) : Promise<Asset | undefined> {
@@ -23,7 +25,11 @@ export async function getLastUpdates(minRound: number) {
   const transactions: any = await response.json();
   await Promise.all((transactions.transactions).map(async (trx: any) => {
     if(trx['tx-type'] == 'acfg') {
-      console.log(await configChange(trx));
+      const newConfig = await configChange(trx);
+      if(newConfig != undefined) {
+        deleteData('algoseas_pirates',[newConfig.assetId]);
+        insertData('algoseas_pirates',[convertAssetToDBEntry(newConfig)]);
+      }
     }
   }));
 }

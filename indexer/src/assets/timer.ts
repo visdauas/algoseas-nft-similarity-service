@@ -16,10 +16,11 @@ export async function waitForBlock() {
   while(true) {
     const URL = `${process.env.ALGOEXPLORER_URL}/status/wait-for-block-after/${lastRound}`;
     await fetch(URL);
-    await getLastUpdates(lastRound);
-    await getSold(10);
-    await updateDatabase(10);
     await getLastAssets(10);
+    await getLastUpdates(lastRound);
+    //
+    //await getSold(10);
+    //await updateDatabase(10);
     lastRound++;
   }
 }
