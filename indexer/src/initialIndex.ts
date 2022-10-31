@@ -1,6 +1,6 @@
 import { getAssetIds } from './assets/assetId';
 import { getAsset } from './assets/assets';
-import { indexData } from './database/indexData';
+import { indexData } from './database';
 import { initalizeDatabase } from './database/initalize';
 import { dropCollection, loadCollection, checkCollectionExsists, getCollectionStatistics } from './database/collection';
 import { getClient } from './database/client';
@@ -36,7 +36,7 @@ export async function initialIndex(statWeights: StatWeights) {
 
   await loadCollection('algoseas_pirates');
 
-  await indexData();
+  await indexData('algoseas_pirates');
 
   await getClient().dataManager.flush({
     collection_names: ["algoseas_pirates"],
