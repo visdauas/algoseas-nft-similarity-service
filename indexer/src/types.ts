@@ -14,6 +14,7 @@ export type AssetSalesDBEntry = {
   statVector: number[];
   price: number;
   round: number;
+  txId: string;
 };
 
 export type Asset = {

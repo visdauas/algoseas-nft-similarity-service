@@ -71,4 +71,9 @@ export const SALES_SCHEMA = [
     data_type: 5, //DataType.Int64
     description: '',
   },
+  {
+    name: 'txId', // algorand blockchain transaction id at the time of sale
+    data_type: 20, //DataType.String
+    description: '',
+  },
 ];
