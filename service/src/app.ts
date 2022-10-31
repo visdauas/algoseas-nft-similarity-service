@@ -29,6 +29,7 @@ const build = (
   app.register(fp(milvusPlugin), {
     url: process.env.MILVUS_URL!,
     collectionName: process.env.MILVUS_COLLECTION_NAME!,
+    collectionNameSales: process.env.MILVUS_COLLECTION_NAME_SALES!,
     user: process.env.MILVUS_USER!,
     password: process.env.MILVUS_PASSWORD!,
   });

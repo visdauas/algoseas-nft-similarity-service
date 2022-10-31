@@ -8,7 +8,6 @@ async function getEveryTransactionFromAsset(assetId: number, txnID: string) : Pr
     try{
       const response = await fetch(URL);
       const data = await response.json();
-      console.log(data);
       if(data.transactions != undefined)
         transactions = data;
     } catch (_) { }
@@ -73,12 +72,13 @@ export async function getSold(limit = 10) : Promise<AssetSalesDBEntry[]> {
     URL += `&limit=${limit}`;
   const response = await fetch(URL);
   const sold: any = await response.json();
-  console.log("HERE");
+  console.log("Loaded sales ids");
   const sales: AssetSalesDBEntry[] = [];
   for(const soldData of sold) {
     const assetId = soldData.assetInformation.SK;
     const price = soldData.marketActivity.algoAmount;
     sales.push(await getTransactions(assetId, price, soldData.marketActivity.txnID));
+    console.log(sales.length + ' / ' + sold.length);
   }
   return sales;
 }

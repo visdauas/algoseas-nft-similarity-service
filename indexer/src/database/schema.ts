@@ -73,7 +73,11 @@ export const SALES_SCHEMA = [
   },
   {
     name: 'txId', // algorand blockchain transaction id at the time of sale
-    data_type: 20, //DataType.String
+    data_type: 21, //DataType.VarChar
+    type_params:
+      {
+        max_length: "64"
+      },
     description: '',
   },
 ];

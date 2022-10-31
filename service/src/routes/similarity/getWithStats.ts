@@ -29,40 +29,41 @@ export default async function routes(fastify: FastifyInstance) {
       luck = fastify.weights.luckWeight * luck;
       plunder = fastify.weights.plunderWeight * plunder;
 
-      const results = await fastify.milvus.client.dataManager.search({
-        collection_name: fastify.milvus.collectionName,
-        expr: "forSale == true",
-        vectors: [[combat, constitution, luck, plunder]],
-        search_params: {
-          anns_field: "statVector",
-          topk: topk == "" ? "5" : topk!,
-          metric_type: "L2",
-          params: JSON.stringify({ search_k: -1 }),
-        },
-        output_fields: ["price"],
-        vector_type: 101, // DataType.FloatVector,
-      });
+      let [assetResults, assetSalesResults] = await Promise.all([
+        await fastify.milvus.client.dataManager.search({
+          collection_name: fastify.milvus.collectionName,
+          expr: "forSale == true",
+          vectors: [[combat, constitution, luck, plunder]],
+          search_params: {
+            anns_field: "statVector",
+            topk: topk == "" ? "5" : topk!,
+            metric_type: "L2",
+            params: JSON.stringify({ search_k: -1 }),
+          },
+          output_fields: ["price"],
+          vector_type: 101,
+        }),
+        await fastify.milvus.client.dataManager.search({
+          collection_name: fastify.milvus.collectionNameSales,
+          vectors: [[combat, constitution, luck, plunder]],
+          search_params: {
+            anns_field: "statVector",
+            topk: topk == "" ? "105" : (+topk! + 100).toString(),
+            metric_type: "L2",
+            params: JSON.stringify({ search_k: -1 }),
+          },
+          output_fields: ["price", "round"],
+          vector_type: 101,
+        }),
+      ]);
 
-      /*const resultss = await fastify.milvus.client.dataManager.search({
-        collection_name: fastify.milvus.collectionName,
-        expr: "forSale == false && price > 0",
-        vectors: [[combat, constitution, luck, plunder]],
-        search_params: {
-          anns_field: "statVector",
-          topk: topk == "" ? "5" : topk!,    
-          metric_type: "L2",
-          //params: JSON.stringify({ nprobe: 8 }),
-          //params: JSON.stringify({ search_k: -1 }),
-          params: JSON.stringify({ ef: 500 }),
-
-        },
-        output_fields: ["price"],
-        vector_type: 101,    // DataType.FloatVector,
-      });*/
+      let sales = assetSalesResults.results;
+      sales.sort((a, b) => a.round - b.round);
+      sales = sales.slice(0, sales.length - 100)
 
       const assetIdsResponse: AssetIds = {
-        assetIdsForSale: results.results,
-        assetIdsSold: [],
+        assetIdsForSale: assetResults.results,
+        assetIdsSold: sales,
       };
 
       response.status(200).send(assetIdsResponse);
