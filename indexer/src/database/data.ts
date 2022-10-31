@@ -30,11 +30,14 @@ export async function getAllData(collectionName: string, schema: any) {
   return results;
 }
 
-export async function checkIfTxIdExsists(collectionName: string, txId: string) {
+export async function checkIfAssetIdExsists(
+  collectionName: string,
+  assetId: number,
+) {
   const results = await getClient().dataManager.query({
     collection_name: collectionName,
-    expr: 'txId == ' + txId,
-    output_fields: ['txId'],
+    expr: 'assetId == ' + assetId,
+    output_fields: ['assetId'],
   });
   return results.data.length > 0;
 }
