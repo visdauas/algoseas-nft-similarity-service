@@ -27,16 +27,3 @@ export async function getLastUpdates(minRound: number) {
     }
   }));
 }
-
-export async function getLastSold(limit: number) {
-  const URL =  `${process.env.PIRATE_API_URL}/prod/marketplace/sales?collectionName=AlgoSeas%20Pirates&sortBy=time&sortAscending=false&limit=${limit}`;
-  const response = await fetch(URL);
-  const sold: any = await response.json();
-  await Promise.all(sold.map(async (soldData:any) => {
-    const asset = await getAsset(soldData.assetInformation.SK);
-    if(asset == undefined) return;
-    asset.price = soldData.marketActivity.algoAmount;
-    asset.forSale = false;
-    console.log(asset);
-  }));
-}
