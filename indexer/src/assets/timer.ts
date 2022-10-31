@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import { getLastUpdates } from './assetUpdate';
 import { getNListings, updateDatabase } from './listings';
-import { getSold } from './indexSales';
+import { getLastSold } from './indexSales';
 import { getLastAssets } from './newAssets';
 
 async function getLastRound() : Promise<number> {
@@ -18,9 +18,8 @@ export async function waitForBlock() {
     await fetch(URL);
     await getLastAssets(10);
     await getLastUpdates(lastRound);
-    //
-    //await getSold(10);
-    //await updateDatabase(10);
+    await updateDatabase(10);
+    await getLastSold(10);
     lastRound++;
   }
 }

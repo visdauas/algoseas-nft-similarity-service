@@ -1,4 +1,5 @@
-import fetch, { Body } from 'node-fetch';
+import { insertData, getIfTxIdExsists} from '../database/data';
+import fetch from 'node-fetch';
 import { AssetSalesDBEntry } from '../types';
 
 async function getEveryTransactionFromAsset(assetId: number, txnID: string) : Promise<any> {
@@ -81,6 +82,12 @@ export async function getSold(limit = 10) : Promise<AssetSalesDBEntry[]> {
     console.log(sales.length + ' / ' + sold.length);
   }
   return sales;
+}
+
+export async function getLastSold(limit: number) {
+  const sold = await getSold(limit);
+  const newSales = sold.filter(async (s) => !(await getIfTxIdExsists('algoseas_pirates_sales', s.txId)));
+  insertData('algoseas_pirates_sales', newSales);
 }
 
 export async function indexSold() : Promise<AssetSalesDBEntry[]> {
