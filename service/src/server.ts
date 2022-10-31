@@ -4,8 +4,11 @@ import fs from "fs";
 import path from "path";
 import http2 from "http2";
 
+import * as dotenv from "dotenv";
+dotenv.config();
+
 const options: FastifyListenOptions = {
-  port: 8000,
+  port: parseInt(process.env.PORT!),
   host: "0.0.0.0",
 };
 

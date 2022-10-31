@@ -16,7 +16,6 @@
     "@zilliz/milvus2-sdk-node": "2.1.3",
     "dotenv": "16.0.3",
     "fastify": "4.9.2",
-    "fastify-https-redirect": "1.0.4",
     "fastify-no-icon": "6.0.0",
     "fastify-plugin": "4.3.0"
   },

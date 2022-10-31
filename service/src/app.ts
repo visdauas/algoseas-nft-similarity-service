@@ -12,7 +12,6 @@ import milvusPlugin from "./database/milvus";
 import weightsPlugin from "./database/weights";
 import fp from "fastify-plugin";
 import http2 from "http2";
-import httpsRedirect from "fastify-https-redirect";
 
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -42,8 +41,6 @@ const build = (
   });
 
   app.register(fastifyNoIcon);
-
-  app.register(httpsRedirect, { httpPort: 8080, httpsPort: 8000 });
 
   app.register(autoload, {
     dir: path.join(__dirname, "routes"),
