@@ -1,18 +1,8 @@
 import { FastifyInstance, FastifyListenOptions, RawReplyDefaultExpression, RawRequestDefaultExpression } from "fastify";
-import { Server, IncomingMessage, ServerResponse } from "http";
 import build from "./app";
 import fs from "fs";
 import path from "path";
 import http2 from "http2";
-
-const loggerConfig = {
-  prettyPrint: true,
-};
-let exposeDocs = true;
-if (process.env.NODE_ENV === "production") {
-  loggerConfig.prettyPrint = false;
-  exposeDocs = true;
-}
 
 const options: FastifyListenOptions = {
   port: 8000,
@@ -30,8 +20,6 @@ async function main() {
     },
     logger: {},
   });
-
-  //await app.ready();
 
   app.listen(options, (err, address) => {
     if (err) {

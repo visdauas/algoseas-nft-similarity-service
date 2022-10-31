@@ -2,7 +2,8 @@ export const assetIdsSchema = {
   $id: "assetIds",
   type: "object",
   properties: {
-    assetIds: { type: "array" },
+    assetIdsForSale: { type: "array" },
+    assetIdsSold: { type: "array" },
   },
-  required: ["assetIds"],
+  required: ["assetIdsForSale", "assetIdsSold"],
 } as const;

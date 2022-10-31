@@ -13,23 +13,22 @@ interface MilvusDBInstance {
   collectionName: string;
 }
 
-// Most importantly, use declaration merging to add the custom property to the Fastify type system
 declare module "fastify" {
   interface FastifyInstance {
     milvus: MilvusDBInstance;
   }
 }
 
-// fastify-plugin automatically adds named export, so be sure to add also this type
-// the variable name is derived from `options.name` property if `module.exports.myPlugin` is missing
-//export const fastifyMilvusdb: FastifyPluginAsync<MilvusDBOptions>;
-
 const milvusPlugin = async (
   fastify: FastifyInstance,
   options: MilvusDBOptions
 ): Promise<void> => {
-  // Create a client
-  const client = new MilvusClient(options.url, false, options.user, options.password);
+  const client = new MilvusClient(
+    options.url,
+    false,
+    options.user,
+    options.password
+  );
 
   await client.collectionManager.loadCollection({
     collection_name: options.collectionName,
@@ -42,5 +41,4 @@ const milvusPlugin = async (
   });
 };
 
-// fastify-plugin automatically adds `.default` property to the exported plugin. See the note below
 export default milvusPlugin;
