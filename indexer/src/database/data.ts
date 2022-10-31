@@ -29,3 +29,12 @@ export async function getAllData(collectionName: string, schema: any) {
   });
   return results;
 }
+
+export async function checkIfTxIdExsists(collectionName: string, txId: string) {
+  const results = await getClient().dataManager.query({
+    collection_name: collectionName,
+    expr: 'txId == ' + txId,
+    output_fields: ['txId'],
+  });
+  return results.data.length > 0;
+}
