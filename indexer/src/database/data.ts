@@ -41,3 +41,12 @@ export async function checkIfAssetIdExsists(
   });
   return results.data.length > 0;
 }
+
+export async function getIfTxIdExsists(collectionName: string, txId: string) {
+  const results = await getClient().dataManager.query({
+    collection_name: collectionName,
+    expr: 'txId == ' + txId,
+    output_fields: ['txId'],
+  });
+  return results.data.length > 0;
+}
