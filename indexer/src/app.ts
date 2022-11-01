@@ -91,6 +91,10 @@ async function checkForNewAssets() {
       }
     }
   }
+
+  while(lastAssetIds.length > 10) {
+    lastAssetIds.shift();
+  }
 }
 
 async function checkStatUpdates(lastRound: number) {
@@ -132,6 +136,10 @@ export async function checkSalesUpdates() {
       }
     }
   }
+
+  while(lastSalesTxIds.length > 10) {
+    lastSalesTxIds.shift();
+  }
 }
 
 let lastListingIds: number[] = [];
@@ -153,6 +161,10 @@ async function checkListingUpdates() {
         console.log('New listing found: ' + listing.assetId);
       }
     }
+  }
+
+  while(lastListingIds.length > 10) {
+    lastListingIds.shift();
   }
 }
 
