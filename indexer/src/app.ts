@@ -38,11 +38,16 @@ async function main() {
     await dropCollection(SALES_COLLECTION_NAME);
   }
 
+  let roundBeforeIndex = await getLastRound();
+
   await initialIndex(
     ASSETS_COLLECTION_NAME,
     SALES_COLLECTION_NAME,
     statWeights,
   );
+
+  // correct for time lost while indexing
+  await checkStatUpdates(roundBeforeIndex);
 
   let lastRound = await getLastRound();
   while (true) {
