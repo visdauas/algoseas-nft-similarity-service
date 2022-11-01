@@ -68,6 +68,10 @@ async function getTransactions(
   const sales: AssetSalesDBEntry = {
     assetId,
     statVector,
+    combat: statVector[0],
+    constitution: statVector[1],
+    luck: statVector[2],
+    plunder: statVector[3],
     price,
     round,
     txId: txnID,

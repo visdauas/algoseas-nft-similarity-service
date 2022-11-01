@@ -12,6 +12,10 @@ export type AssetDBEntry = {
 export type AssetSalesDBEntry = {
   assetId: number;
   statVector: number[];
+  combat: number;
+  constitution: number;
+  luck: number;
+  plunder: number;
   price: number;
   round: number;
   txId: string;

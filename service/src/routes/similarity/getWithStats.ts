@@ -40,7 +40,7 @@ export default async function routes(fastify: FastifyInstance) {
             metric_type: "L2",
             params: JSON.stringify({ search_k: -1 }),
           },
-          output_fields: ["price"],
+          output_fields: ["price", "statVector"],
           vector_type: 101,
         }),
         await fastify.milvus.client.dataManager.search({
@@ -48,18 +48,16 @@ export default async function routes(fastify: FastifyInstance) {
           vectors: [[combat, constitution, luck, plunder]],
           search_params: {
             anns_field: "statVector",
-            topk: topk == "" ? "105" : (+topk! + 100).toString(),
+            topk: topk == "" ? "5" : topk!,
             metric_type: "L2",
             params: JSON.stringify({ search_k: -1 }),
           },
-          output_fields: ["price", "round"],
+          output_fields: ["price", "round", "statVector"],
           vector_type: 101,
         }),
       ]);
 
       let sales = assetSalesResults.results;
-      sales.sort((a, b) => b.round - a.round);
-      sales = sales.slice(0, sales.length - 100);
 
       const assetIdsResponse: AssetIds = {
         assetIdsForSale: assetResults.results,

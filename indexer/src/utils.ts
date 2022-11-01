@@ -38,15 +38,18 @@ export function applyWeightsToAssetSalesDBEntry(
   asset: AssetSalesDBEntry,
   weights: StatWeights,
 ): AssetSalesDBEntry {
-  const statVector = asset.statVector;
-
   const weightedStatVector = [
-    statVector[0] * weights.combat,
-    statVector[1] * weights.constitution,
-    statVector[2] * weights.luck,
-    statVector[3] * weights.plunder,
+    asset.combat * weights.combat,
+    asset.constitution * weights.constitution,
+    asset.luck * weights.luck,
+    asset.plunder * weights.plunder,
   ];
   asset.statVector = weightedStatVector;
+
+  asset.combat = weightedStatVector[0];
+  asset.constitution = weightedStatVector[1];
+  asset.luck = weightedStatVector[2];
+  asset.plunder = weightedStatVector[3];
 
   return asset;
 }

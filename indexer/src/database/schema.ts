@@ -61,6 +61,26 @@ export const SALES_SCHEMA = [
     },
   },
   {
+    name: 'combat',
+    data_type: 4, //DataType.Int32
+    description: '',
+  },
+  {
+    name: 'constitution',
+    data_type: 4, //DataType.Int32
+    description: '',
+  },
+  {
+    name: 'luck',
+    data_type: 4, //DataType.Int32
+    description: '',
+  },
+  {
+    name: 'plunder',
+    data_type: 4, //DataType.Int32
+    description: '',
+  },
+  {
     name: 'price',
     data_type: 5, //DataType.Int64
     description: '',
