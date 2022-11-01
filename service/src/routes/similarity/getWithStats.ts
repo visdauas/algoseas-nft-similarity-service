@@ -59,7 +59,7 @@ export default async function routes(fastify: FastifyInstance) {
 
       let sales = assetSalesResults.results;
       sales.sort((a, b) => b.round - a.round);
-      sales = sales.slice(0, sales.length - 100)
+      sales = sales.slice(0, sales.length - 100);
 
       const assetIdsResponse: AssetIds = {
         assetIdsForSale: assetResults.results,

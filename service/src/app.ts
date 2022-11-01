@@ -1,11 +1,7 @@
-import fastify, {
-  FastifyBaseLogger,
-  FastifyHttp2SecureOptions,
-} from "fastify";
+import fastify, { FastifyBaseLogger, FastifyHttp2SecureOptions } from "fastify";
 import autoload from "@fastify/autoload";
 import fastifyNoIcon from "fastify-no-icon";
 import path from "path";
-import { userSchema } from "./schemas/user";
 import { errorSchema } from "./schemas/error";
 import { assetIdsSchema } from "./schemas/assetIds";
 import milvusPlugin from "./database/milvus";
@@ -23,13 +19,12 @@ const build = (
 
   // add in common schemas
   app.addSchema(assetIdsSchema);
-  app.addSchema(userSchema);
   app.addSchema(errorSchema);
 
   app.register(fp(milvusPlugin), {
     url: process.env.MILVUS_URL!,
-    collectionName: process.env.MILVUS_COLLECTION_NAME!,
-    collectionNameSales: process.env.MILVUS_COLLECTION_NAME_SALES!,
+    collectionName: process.env.MILVUS_ASSETS_COLLECTION!,
+    collectionNameSales: process.env.MILVUS_SALES_COLLECTION!,
     user: process.env.MILVUS_USER!,
     password: process.env.MILVUS_PASSWORD!,
   });

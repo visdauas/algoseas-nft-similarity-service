@@ -1,7 +1,7 @@
 import { schemaToEmbeddings } from '../utils';
 import { AssetDBEntry, AssetSalesDBEntry } from '../types';
 import { getClient } from './client';
-import { flushCollection } from './collection';
+import { ASSETS_AND_LISTINGS_SCHEMA } from './schema';
 
 export async function insertData(
   collectionName: string,
@@ -11,7 +11,6 @@ export async function insertData(
     collection_name: collectionName,
     fields_data: data,
   });
-  await flushCollection(collectionName);
 }
 
 export async function deleteData(collectionName: string, assetIds: number[]) {
@@ -30,6 +29,15 @@ export async function getAllData(collectionName: string, schema: any) {
   return results;
 }
 
+export async function getAssetData(collectionName: string, assetId: number) {
+  const results = await getClient().dataManager.query({
+    collection_name: collectionName,
+    expr: 'assetId == ' + assetId,
+    output_fields: schemaToEmbeddings(ASSETS_AND_LISTINGS_SCHEMA),
+  });
+  return results.data[0];
+}
+
 export async function checkIfAssetIdExsists(
   collectionName: string,
   assetId: number,
@@ -42,10 +50,22 @@ export async function checkIfAssetIdExsists(
   return results.data.length > 0;
 }
 
+export async function checkIfListingExsists(
+  collectionName: string,
+  assetId: number,
+) {
+  const results = await getClient().dataManager.query({
+    collection_name: collectionName,
+    expr: 'assetId == ' + assetId + ' and forSale == true',
+    output_fields: ['assetId'],
+  });
+  return results.data.length > 0;
+}
+
 export async function getIfTxIdExsists(collectionName: string, txId: string) {
   const results = await getClient().dataManager.query({
     collection_name: collectionName,
-    expr: 'txId == ' + txId,
+    expr: 'txId == "' + txId + '"',
     output_fields: ['txId'],
   });
   return results.data.length > 0;

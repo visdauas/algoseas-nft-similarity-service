@@ -18,18 +18,18 @@ export type AssetSalesDBEntry = {
 };
 
 export type Asset = {
-  assetId: number,
-  combat: number,
-  constitution: number,
-  luck: number,
-  plunder: number,
-  forSale: boolean,
-  price: number,
-}
+  assetId: number;
+  combat: number;
+  constitution: number;
+  luck: number;
+  plunder: number;
+  forSale: boolean;
+  price: number;
+};
 
 export type StatWeights = {
-  combat: number,
-  constitution: number,
-  luck: number,
-  plunder: number,
-}
+  combat: number;
+  constitution: number;
+  luck: number;
+  plunder: number;
+};

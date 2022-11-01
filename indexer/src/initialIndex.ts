@@ -1,9 +1,9 @@
 import { indexData } from './database';
-import { initalizeDatabase } from './database/initalize';
 import {
-  dropCollection,
   loadCollection,
   checkCollectionExsists,
+  createCollection,
+  flushCollection,
 } from './database/collection';
 import { insertData } from './database/data';
 import { AssetDBEntry, Asset, StatWeights, AssetSalesDBEntry } from './types';
@@ -14,21 +14,28 @@ import {
   convertAssetToDBEntry,
 } from './utils';
 import { indexSold } from './assets/indexSales';
+import { ASSETS_AND_LISTINGS_SCHEMA, SALES_SCHEMA } from './database/schema';
 
-export async function initialIndex(statWeights: StatWeights) {
-  //await dropCollection('algoseas_pirates');
-  await dropCollection('algoseas_pirates_sales');
+export async function initialIndex(
+  assetsCollectionName: string,
+  salesCollectionName: string,
+  statWeights: StatWeights,
+) {
+  if (!(await checkCollectionExsists(assetsCollectionName))) {
+    await createCollection(assetsCollectionName, ASSETS_AND_LISTINGS_SCHEMA);
+    await initialIndexAssets(assetsCollectionName, statWeights);
+  }
 
-  //const exsists = await checkCollectionExsists('algoseas_pirates');
-  //if (!exsists) {
-  await initalizeDatabase();
-  //}
-
-  //initialIndexAssets(statWeights);
-  initialIndexSales(statWeights);
+  if (!(await checkCollectionExsists(salesCollectionName))) {
+    await createCollection(salesCollectionName, SALES_SCHEMA);
+    await initialIndexSales(salesCollectionName, statWeights);
+  }
 }
 
-async function initialIndexAssets(statWeights: StatWeights) {
+async function initialIndexAssets(
+  collectionName: string,
+  statWeights: StatWeights,
+) {
   const assets: Asset[] = await getEveryAsset();
   const assetDBEntries: AssetDBEntry[] = assets.map((asset) => {
     return convertAssetToDBEntry(asset);
@@ -40,14 +47,19 @@ async function initialIndexAssets(statWeights: StatWeights) {
     },
   );
 
-  await insertData('algoseas_pirates', weightedAssetDBEntries);
+  await insertData(collectionName, weightedAssetDBEntries);
 
-  await loadCollection('algoseas_pirates');
+  await loadCollection(collectionName);
 
-  await indexData('algoseas_pirates');
+  await indexData(collectionName);
+
+  await flushCollection(collectionName);
 }
 
-async function initialIndexSales(statWeights: StatWeights) {
+async function initialIndexSales(
+  collectionName: string,
+  statWeights: StatWeights,
+) {
   const assets: AssetSalesDBEntry[] = await indexSold();
 
   const weightedAssetDBEntries: AssetSalesDBEntry[] = assets.map(
@@ -56,9 +68,9 @@ async function initialIndexSales(statWeights: StatWeights) {
     },
   );
 
-  await insertData('algoseas_pirates_sales', weightedAssetDBEntries);
+  await insertData(collectionName, weightedAssetDBEntries);
 
-  await loadCollection('algoseas_pirates_sales');
+  await loadCollection(collectionName);
 
-  await indexData('algoseas_pirates_sales');
+  await flushCollection(collectionName);
 }

@@ -1,25 +1,24 @@
-/**
- * The following lines intialize dotenv,
- * so that env vars from the .env file are present in process.env
- */
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { testDatabase } from './databaseTest';
-import { getClient } from './database/client';
-import { getAssetIds } from './assets/assetId';
-import { getEveryAsset } from './assets/indexAssets';
 import { getAsset } from './assets/assets';
 import { getLastUpdates } from './assets/assetUpdate';
 import { initialIndex } from './initialIndex';
-import { waitForBlock } from './assets/timer';
-import { getNListings } from './assets/listings';
+import { getLastRound } from './assets/timer';
+import { getListings } from './assets/listings';
 import { convertAssetToDBEntry } from './utils';
-import { StatWeights } from './types';
-
-export const sum = (a: number, b: number): number => {
-  return a + b;
-};
+import { Asset, StatWeights } from './types';
+import { getSold } from './assets/indexSales';
+import { getLastAssets } from './assets/newAssets';
+import {
+  checkIfAssetIdExsists,
+  checkIfListingExsists,
+  deleteData,
+  getIfTxIdExsists,
+  insertData,
+} from './database/data';
+import fetch from 'node-fetch';
+import { dropCollection, flushCollection } from './database/collection';
 
 const statWeights: StatWeights = {
   combat: parseFloat(process.env.PIRATE_COMBAT_WEIGHT!),
@@ -28,21 +27,128 @@ const statWeights: StatWeights = {
   plunder: parseFloat(process.env.PIRATE_PLUNDER_WEIGHT!),
 };
 
-//waitForBlock();
+const ASSETS_COLLECTION_NAME = process.env.MILVUS_ASSETS_COLLECTION!;
+const SALES_COLLECTION_NAME = process.env.MILVUS_SALES_COLLECTION!;
 
-//getEveryAsset();
+const REINDEX = process.env.REINDEX === 'true';
 
-/*
-getAssetIds().then(ids => {
-  ids.forEach(id => {
-    getAsset(id).then(asset => {
-      console.log(asset.assetId);
-    });
-  });
-});
-*/
+async function main() {
+  if (REINDEX) {
+    await dropCollection(ASSETS_COLLECTION_NAME);
+    await dropCollection(SALES_COLLECTION_NAME);
+  }
 
-//getClient();
-//testDatabase(); // do not uncomment if you don't want to reindex 21k items. learnt it the hard way
-initialIndex(statWeights);
+  await initialIndex(
+    ASSETS_COLLECTION_NAME,
+    SALES_COLLECTION_NAME,
+    statWeights,
+  );
 
+  let lastRound = await getLastRound();
+  while (true) {
+    try {
+      console.log('Checking for updates, current round: ' + lastRound);
+      const URL = `${process.env.ALGOEXPLORER_URL}/status/wait-for-block-after/${lastRound}`;
+      await fetch(URL);
+
+      checkForNewAssets();
+      checkStatUpdates(lastRound);
+      checkSalesUpdates();
+      checkListingUpdates();
+
+      // flush milvus database every 100 blocks
+      if (lastRound % 100 === 0) {
+        await flushCollection(ASSETS_COLLECTION_NAME);
+        await flushCollection(SALES_COLLECTION_NAME);
+        console.log('Flushed collections');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    lastRound++;
+  }
+}
+
+let lastAssetIds: number[] = [];
+
+async function checkForNewAssets() {
+  const assets: Asset[] = await getLastAssets(10);
+
+  for (const asset of assets) {
+    if (!lastAssetIds.includes(asset.assetId)) {
+      if (await checkIfAssetIdExsists(ASSETS_COLLECTION_NAME, asset.assetId)) {
+        lastAssetIds.push(asset.assetId);
+      } else {
+        await insertData(ASSETS_COLLECTION_NAME, [
+          convertAssetToDBEntry(asset),
+        ]);
+        console.log('New asset found: ' + asset.assetId);
+      }
+    }
+  }
+}
+
+async function checkStatUpdates(lastRound: number) {
+  const assets: Asset[] = await getLastUpdates(lastRound);
+  if (assets.length > 0) {
+    const assetIds = assets.map((asset) => asset.assetId);
+    await deleteData(ASSETS_COLLECTION_NAME, assetIds);
+
+    const assetDBEntries = assets.map((asset) => convertAssetToDBEntry(asset));
+    await insertData(ASSETS_COLLECTION_NAME, assetDBEntries);
+
+    console.log('Updated assets: ' + assetIds);
+  }
+}
+
+let lastSalesTxIds: string[] = [];
+
+export async function checkSalesUpdates() {
+  const sales = await getSold(10);
+
+  for (const sale of sales) {
+    if (!lastSalesTxIds.includes(sale.txId)) {
+      if (await getIfTxIdExsists(SALES_COLLECTION_NAME, sale.txId)) {
+        lastSalesTxIds.push(sale.txId);
+      } else {
+        await insertData(SALES_COLLECTION_NAME, [sale]);
+
+        // change forSale to false
+        let asset: Asset | undefined = await getAsset(sale.assetId);
+        if (asset != undefined) {
+          asset.forSale = false;
+          await deleteData(ASSETS_COLLECTION_NAME, [asset.assetId]);
+          await insertData(ASSETS_COLLECTION_NAME, [
+            convertAssetToDBEntry(asset),
+          ]);
+        }
+
+        console.log('New sale found: ' + sale.txId);
+      }
+    }
+  }
+}
+
+let lastListingIds: number[] = [];
+
+async function checkListingUpdates() {
+  const listings: Asset[] = await getListings(10);
+
+  for (const listing of listings) {
+    if (!lastListingIds.includes(listing.assetId)) {
+      if (
+        await checkIfListingExsists(ASSETS_COLLECTION_NAME, listing.assetId)
+      ) {
+        lastListingIds.push(listing.assetId);
+      } else {
+        await deleteData(ASSETS_COLLECTION_NAME, [listing.assetId]);
+        await insertData(ASSETS_COLLECTION_NAME, [
+          convertAssetToDBEntry(listing),
+        ]);
+        console.log('New listing found: ' + listing.assetId);
+      }
+    }
+  }
+}
+
+main();

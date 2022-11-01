@@ -2,7 +2,6 @@ import { FastifyInstance, RequestGenericInterface } from "fastify";
 import { AssetIds } from "../../types/types";
 import { FromSchema } from "json-schema-to-ts";
 import { assetIdsSchema } from "../../schemas/assetIds";
-import { SearchResultData } from "@zilliz/milvus2-sdk-node/dist/milvus/types";
 
 const getAssetIdsParamsSchema = {
   type: "object",
@@ -41,43 +40,44 @@ export default async function routes(fastify: FastifyInstance) {
 
       const statVector = result.data[0].statVector;
 
-      const results = await fastify.milvus.client.dataManager.search({
-        collection_name: fastify.milvus.collectionName,
-        expr: "forSale == true",
-        vectors: [statVector],
-        search_params: {
-          anns_field: "statVector",
-          topk: topk == "" ? "6" : topk! + 1,
-          metric_type: "L2",
-          params: JSON.stringify({ search_k: -1 }),
-        },
-        output_fields: ["price"],
-        vector_type: 101, // DataType.FloatVector,
-      });
+      let [assetResults, assetSalesResults] = await Promise.all([
+        await fastify.milvus.client.dataManager.search({
+          collection_name: fastify.milvus.collectionName,
+          expr: "forSale == true",
+          vectors: [statVector],
+          search_params: {
+            anns_field: "statVector",
+            topk: topk == "" ? "6" : (+topk! + 1).toString(),
+            metric_type: "L2",
+            params: JSON.stringify({ search_k: -1 }),
+          },
+          output_fields: ["price"],
+          vector_type: 101,
+        }),
+        await fastify.milvus.client.dataManager.search({
+          collection_name: fastify.milvus.collectionNameSales,
+          vectors: [statVector],
+          search_params: {
+            anns_field: "statVector",
+            topk: topk == "" ? "105" : (+topk! + 100).toString(),
+            metric_type: "L2",
+            params: JSON.stringify({ search_k: -1 }),
+          },
+          output_fields: ["price", "round"],
+          vector_type: 101,
+        }),
+      ]);
 
-      const assetIdsForSale = results.results;
-      assetIdsForSale.shift();
+      const listings = assetResults.results;
+      listings.shift();
 
-      /*const resultss = await fastify.milvus.client.dataManager.search({
-        collection_name: fastify.milvus.collectionName,
-        expr: "forSale == false && price > 0",
-        vectors: [statVector],
-        search_params: {
-          anns_field: "statVector",
-          topk: topk == "" ? "5" : topk!,
-          metric_type: "L2",
-          params: JSON.stringify({ nprobe: 8 }),
-          //params: JSON.stringify({ search_k: -1 }),
-          //params: JSON.stringify({ ef: 500
-         }),
-        },
-        output_fields: ["price"],
-        vector_type: 101, // DataType.FloatVector,
-      });*/
+      let sales = assetSalesResults.results;
+      sales.sort((a, b) => b.round - a.round);
+      sales = sales.slice(0, sales.length - 100);
 
       const assetIdsResponse: AssetIds = {
-        assetIdsForSale: assetIdsForSale,
-        assetIdsSold: [],
+        assetIdsForSale: listings,
+        assetIdsSold: sales,
       };
 
       response.status(200).send(assetIdsResponse);

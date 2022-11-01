@@ -6,7 +6,7 @@ export const assetStatsSchema = {
     constitution: { type: "integer" },
     luck: { type: "integer" },
     plunder: { type: "integer" },
-    topk: { type: "string"}
+    topk: { type: "string" },
   },
   required: ["combat", "constitution", "luck", "plunder"],
 } as const;

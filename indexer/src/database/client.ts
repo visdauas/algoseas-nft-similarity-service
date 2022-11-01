@@ -15,5 +15,5 @@ function createClient() {
   const password = process.env.MILVUS_PASSWORD!;
 
   milvusClient = new MilvusClient(address, false, user, password);
-  console.log('connected');
+  console.log('Connected to Milvus');
 }
