@@ -6,7 +6,11 @@ import { getLastUpdates } from './assets/assetUpdate';
 import { initialIndex } from './initialIndex';
 import { getLastRound } from './assets/timer';
 import { getListings } from './assets/listings';
-import { convertAssetToDBEntry } from './utils';
+import {
+  applyWeightsToAssetDBEntry,
+  applyWeightsToAssetSalesDBEntry,
+  convertAssetToDBEntry,
+} from './utils';
 import { Asset, StatWeights } from './types';
 import { getSold } from './assets/indexSales';
 import { getLastAssets } from './assets/newAssets';
@@ -85,14 +89,14 @@ async function checkForNewAssets() {
         lastAssetIds.push(asset.assetId);
       } else {
         await insertData(ASSETS_COLLECTION_NAME, [
-          convertAssetToDBEntry(asset),
+          applyWeightsToAssetDBEntry(convertAssetToDBEntry(asset), statWeights),
         ]);
         console.log('New asset found: ' + asset.assetId);
       }
     }
   }
 
-  while(lastAssetIds.length > 10) {
+  while (lastAssetIds.length > 10) {
     lastAssetIds.shift();
   }
 }
@@ -103,7 +107,9 @@ async function checkStatUpdates(lastRound: number) {
     const assetIds = assets.map((asset) => asset.assetId);
     await deleteData(ASSETS_COLLECTION_NAME, assetIds);
 
-    const assetDBEntries = assets.map((asset) => convertAssetToDBEntry(asset));
+    const assetDBEntries = assets.map((asset) =>
+      applyWeightsToAssetDBEntry(convertAssetToDBEntry(asset), statWeights),
+    );
     await insertData(ASSETS_COLLECTION_NAME, assetDBEntries);
 
     console.log('Updated assets: ' + assetIds);
@@ -120,7 +126,9 @@ export async function checkSalesUpdates() {
       if (await getIfTxIdExsists(SALES_COLLECTION_NAME, sale.txId)) {
         lastSalesTxIds.push(sale.txId);
       } else {
-        await insertData(SALES_COLLECTION_NAME, [sale]);
+        await insertData(SALES_COLLECTION_NAME, [
+          applyWeightsToAssetSalesDBEntry(sale, statWeights),
+        ]);
 
         // change forSale to false
         let asset: Asset | undefined = await getAsset(sale.assetId);
@@ -128,7 +136,10 @@ export async function checkSalesUpdates() {
           asset.forSale = false;
           await deleteData(ASSETS_COLLECTION_NAME, [asset.assetId]);
           await insertData(ASSETS_COLLECTION_NAME, [
-            convertAssetToDBEntry(asset),
+            applyWeightsToAssetDBEntry(
+              convertAssetToDBEntry(asset),
+              statWeights,
+            ),
           ]);
         }
 
@@ -137,7 +148,7 @@ export async function checkSalesUpdates() {
     }
   }
 
-  while(lastSalesTxIds.length > 10) {
+  while (lastSalesTxIds.length > 10) {
     lastSalesTxIds.shift();
   }
 }
@@ -156,14 +167,17 @@ async function checkListingUpdates() {
       } else {
         await deleteData(ASSETS_COLLECTION_NAME, [listing.assetId]);
         await insertData(ASSETS_COLLECTION_NAME, [
-          convertAssetToDBEntry(listing),
+          applyWeightsToAssetDBEntry(
+            convertAssetToDBEntry(listing),
+            statWeights,
+          ),
         ]);
         console.log('New listing found: ' + listing.assetId);
       }
     }
   }
 
-  while(lastListingIds.length > 10) {
+  while (lastListingIds.length > 10) {
     lastListingIds.shift();
   }
 }
