@@ -6,6 +6,9 @@ https://15.204.8.217:8080/similarity/assetId=920773639/5
 Or if you already know the stats of your pirate you can use this alternative faster api, without pirate stat lookup:
 https://15.204.8.217:8080/similarity/stats/combat=50/constitution=50/luck=50/plunder=50/5
 
+## Video Demo
+[![Alt text](https://img.youtube.com/vi/rhalT2lN2YY/0.jpg)](https://www.youtube.com/watch?v=rhalT2lN2YY)
+
 ## Requirements
 
 This service uses Milvus Cluster(Standalone doesn't support authentication)
