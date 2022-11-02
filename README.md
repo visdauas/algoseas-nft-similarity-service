@@ -1,5 +1,5 @@
 # Algoseas NFT Similarity Service
-An algoseas pirates indexer and similarity service using [Milvus](https://github.com/milvus-io/milvus) a stat of the art open source vector database
+An algoseas pirates indexer and similarity service using [Milvus](https://github.com/milvus-io/milvus) a state of the art open source vector database
 
 
 ## Try it out at:
@@ -63,6 +63,7 @@ sudo docker compose up -d
 - Initial index takes about 10 minutes
 - Pirate data is updated every round(Algorand block time: ~3.7sec)
 - You can adjust the importance of stats with weights(We recommend using even weights because floats mess up the search results)
+- It also speeds up searches by indexing the vector database with the ANNOY algorithm
 
 
 ### Service
