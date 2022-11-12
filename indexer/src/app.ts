@@ -24,6 +24,11 @@ import {
 import fetch from 'node-fetch';
 import { dropCollection, flushCollection } from './database/collection';
 
+// TODO: figure out a better way to prevent crashes on invalid json
+process.on('uncaughtException', function (error) {
+  console.log(error.stack);
+});
+
 const statWeights: StatWeights = {
   combat: parseFloat(process.env.PIRATE_COMBAT_WEIGHT!),
   constitution: parseFloat(process.env.PIRATE_CONSTITUTION_WEIGHT!),

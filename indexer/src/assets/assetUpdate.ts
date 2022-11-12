@@ -17,17 +17,19 @@ async function configChange(trx: any): Promise<Asset | undefined> {
 
 //https://developer.algorand.org/docs/get-details/indexer/#transaction-type
 export async function getLastUpdates(minRound: number) {
-  const URL = `${process.env.ALGOINDEXER_URL}/accounts/SEASZVO4B4DC3F2SQKQVTQ5WXNVQWMCIPFPWTNQT3KMUX2JEGJ5K76ZC4Q/transactions?min-round=${minRound}`;
-  const response = await fetch(URL);
-  const transactions: any = await response.json();
   const assets: Asset[] = [];
-  for (const txn of transactions.transactions) {
-    if (txn['tx-type'] == 'acfg') {
-      const newConfig = await configChange(txn);
-      if (newConfig != undefined) {
-        assets.push(newConfig);
+  try {
+    const URL = `${process.env.ALGOINDEXER_URL}/accounts/SEASZVO4B4DC3F2SQKQVTQ5WXNVQWMCIPFPWTNQT3KMUX2JEGJ5K76ZC4Q/transactions?min-round=${minRound}`;
+    const response = await fetch(URL);
+    const transactions: any = await response.json();
+    for (const txn of transactions.transactions) {
+      if (txn['tx-type'] == 'acfg') {
+        const newConfig = await configChange(txn);
+        if (newConfig != undefined) {
+          assets.push(newConfig);
+        }
       }
     }
-  }
+  } catch (error) {}
   return assets;
 }
