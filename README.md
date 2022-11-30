@@ -2,13 +2,13 @@
 An algoseas pirates indexer and similarity service using [Milvus](https://github.com/milvus-io/milvus) a state of the art open source vector database
 
 
-## Try it out at:
-https://15.204.8.217:8080/similarity/assetId=920773639/5
+## Api urls:
+similarity/assetId=920773639/5
 
 (Latency: ~750ms)
 
 Or if you already know the stats of your pirate you can use this alternative faster api, without pirate stat lookup:
-https://15.204.8.217:8080/similarity/stats/combat=50/constitution=50/luck=50/plunder=50/5
+similarity/stats/combat=50/constitution=50/luck=50/plunder=50/5
 
 (Latency: ~500ms)
 
